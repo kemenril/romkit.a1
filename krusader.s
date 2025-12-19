@@ -2850,7 +2850,9 @@ GETCH   		; Get a character from the keyboard.
 #else
 	BEQ GETCH
 #endif
-ENDKRUSADER	RTS
+	RTS
+
+-MARK
 	
 ;-------------------------------------------------------------------------
 ;
@@ -2887,7 +2889,7 @@ MONPROMPT          =     '\'             ;  Prompt character
 
 * = $FF00
 ; We need to fill the void between addresses with actual void.
-.dsb (*-ENDKRUSADER), 0
+.dsb (*-MARK), 0
 * = $FF00
                 
 RESET           CLD                   ;  Clear decimal arithmetic mode
@@ -2907,7 +2909,7 @@ RESET           CLD                   ;  Clear decimal arithmetic mode
 #ifdef AUTORUN
 ESCAPE		JMP	AUTORUN
 		NOP			; To keep things in the right place
-		NOP
+;		NOP
 #else
 ESCAPE          LDA     #MONPROMPT       ;  Print prompt character
                 JSR     OUTCH         ;  Output it.
@@ -3019,6 +3021,7 @@ XAMNEXT         STX     MODEM         ;  0 -> MODE (XAM mode).
 MOD8CHK         LDA     XAML          ;  If address MOD 8 = 0 start new line
                 AND     #$07
 ENDWSHELL       BPL     NXTPRNT       ;  Always taken.
+-MARK
 
 #ifdef	APPLE1
 ; Apple 1 I/O values
@@ -3027,6 +3030,10 @@ KBDRDY  =$D011		; Apple 1 Keyboard data waiting when negative.
 
 ;	.ORG $FFDC
 * = $FFDC
+; We need to fill the void between addresses with actual void.
+.dsb (*-MARK), 0
+* = $FFDC
+
 
 OUTHEX	PHA 		; Print 1 hex byte. 
 	LSR
@@ -3044,13 +3051,18 @@ OUTCH	BIT DSP         ;  DA bit (B7) cleared yet?
         BMI OUTCH       ;  No! Wait for display ready
         STA DSP         ;  Output character. Sets DA
 ENDIO   RTS
+-MARK
 #else
 IOMEM	=$E000
 PUTCH	=IOMEM+1
 KBD	=IOMEM+4
 KBDRDY  =IOMEM+4
+-MARK
 
 ;	.ORG $FFDC
+* = $FFDC
+; We need to fill the void between addresses with actual void.
+.dsb (*-MARK), 0
 * = $FFDC
 OUTHEX	PHA 		; Print 1 hex byte. 
 	LSR
@@ -3065,15 +3077,16 @@ PRHEX	AND #$0F	; Print 1 hex digit
 	BCC OUTCH
 	ADC #$06
 OUTCH	STA PUTCH
-ENDIO	RTS  
+ENDIO	RTS
+-MARK
 #endif	
 
 	
 #ifdef	MINIMONITOR
-;* = $FFFA
+* = $FFFA
 ; We may need to fill the void between addresses with actual void.
-;.dsb (*-ENDIO), 0
-	.WORD $0000
+.dsb (*-MARK), 0
+;	.WORD $0000
 * = $FFFA		; INTERRUPT VECTORS
 	.WORD $0F00
 	.WORD RESET
