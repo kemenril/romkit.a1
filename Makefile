@@ -45,7 +45,7 @@ image-basic: clean clean-rom load-basic ${ROMFILE} add-basic add-krusader
 # Krusader from the build.
 image-basiconly: clean clean-rom load-basic add-basic add-monitor
 #This one will load Krusader.
-image-krusader: clean clean-rom load-krusader ${ROMFILE} add-basic add-krusader add-monitor
+image-krusader: clean clean-rom load-krusader ${ROMFILE} add-basic add-krusader
 
 new-page: rom.image
 	@echo "Adding image to ${PAGEDFILE}"
